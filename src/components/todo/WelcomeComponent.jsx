@@ -1,13 +1,42 @@
 import {Link, useParams} from "react-router-dom";
+import {useState} from "react";
+import {retrieveHelloWorldBeanPathVariable} from "./api/HelloWorldApiService";
 
 function WelcomeComponent() {
+
     const {username} = useParams()
+
+    const [message,setMessage] = useState(null)
+
+    function callHelloWorldRestApi() {
+        retrieveHelloWorldBeanPathVariable('Sraka')
+            .then((response) => succesfulResponse(response))
+            .catch((error)=>(errorResponse(error)))
+            .finally(()=>console.log('cleanup'))
+    }
+
+    function succesfulResponse(response) {
+        console.log(response)
+        setMessage(response.data)
+    }
+
+    function errorResponse(response) {
+        console.log(response)
+
+    }
+
     return (
         <div className="WelcomeComponent">
             <h1>Welcome {username}</h1>
             <div>
                 Manage your todos - <Link to="/todos">Go here</Link>
             </div>
+            <div>
+                <button className={"btn btn-success"} onClick={callHelloWorldRestApi}>CallHelloWorld REST API</button>
+            </div>
+            <div className={
+                "text-info"
+            }>{message}</div>
         </div>
     )
 }
